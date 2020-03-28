@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using Life.Item;
 
 namespace Life
@@ -11,20 +13,17 @@ namespace Life
         public static int fieldHeight = 800; //высота экрана
         public static int foodSpawnRate = 30; //период спавна еды (чем больше, тем реже)
         public static double slip = 0.8;    //вязкость среды(чем больше, тем сильнее заносит бактерий)
-        public static int changeOfBeginEvil = 1000;
-        public static int BacterialWidth = 20;
-        public static int BacterialHeigth = 27;
-        public static int FoodSize = 10;
+        public const int changeOfBeginEvil = 10;
+        public const int BacterialWidth = 20;  //Ширина бактерии
+        public const int BacterialHeigth = 27; //Высота бактерии
+        public const int FoodSize = 10;
+        public const int IsFood = 0;
+        public const int IsPeac = 1;
+        public const int IsEvil = 2;
 
-        static int frame = 1;
 
-        public static int IsFood = 0;
-        public static int IsPeac = 1;
-        public static int IsEvil = 2;
-        public static long allTimePeacCounter = 0;
-        public static long allTimeEvilCounter = 0;
-        public static int nowPeacCounter = 0;
-        public static int nowEvilCounter = 0;
+
+        public static ViewModelControl Controler { get; set; } = new ViewModelControl();
 
         MainWindow Field;
 
@@ -38,24 +37,24 @@ namespace Life
 
         public void Start()
         {
-            NewBacteria(god.Start(Convert.ToInt32(fieldHeight / 2), Convert.ToInt32(fieldWidth / 2)));
+            AddBacteria(god.Start());
             NewFood();
-            Field.StatrLife.IsEnabled = false;
+            Field.StartLife.IsEnabled = false;
         }
         public void OneDrawing(int frameSkip)
         {
-            while (frame % (frameSkip+1) != 0)
+            while (Controler.frame % (frameSkip+1) != 0)
             {
                 NextFrame();
-                frame++;
+                Controler.frame++;
             }
             RefreshMap();
             NextFrame();
-            frame++;
+            Controler.frame++;
         }
         private void NextFrame()
         {
-            if (frame % foodSpawnRate == 0)
+            if (Controler.frame % foodSpawnRate == 0)
                 NewFood();
             for (int i = 0; i < bacterias.Count; i++)
             {
@@ -63,7 +62,7 @@ namespace Life
                 {
                     bacterias[i].NextMove(bacterias);
                     if (bacterias[i].Target != null)
-                        if (((Math.Abs(bacterias[i].x - bacterias[i].Target.x) < 4) && (Math.Abs(bacterias[i].y - bacterias[i].Target.y)) < 4) && (bacterias[i].age > 50))
+                        if (((Math.Abs(bacterias[i].x - (FoodSize / 2) - bacterias[i].Target.x + (BacterialWidth / 2)) < 4) && (Math.Abs(bacterias[i].y - (FoodSize / 2) - bacterias[i].Target.y + BacterialHeigth / 2)) < 4) && (bacterias[i].age > 50))
                             EatFood(bacterias[i]);
                     if (i < bacterias.Count)
                         if ((bacterias[i].heal < 1) && (bacterias[i].type != IsFood))
@@ -79,13 +78,17 @@ namespace Life
                 Canvas.SetTop(bacterias[i].Texture, bacterias[i].y);
             }
         }
-        private void NewBacteria(Bacteria Mom)
+        private void AddBacteria(Bacteria Bac)
         {
-            Bacteria Bac = god.CreateBacteria(Mom);
             bacterias.Add(Bac);
             Canvas.SetLeft(Bac.Texture, Bac.x);
             Canvas.SetTop(Bac.Texture, Bac.y);
             Field.CanvasMap.Children.Add(Bac.Texture);
+        }
+        private void NewBacteria(Bacteria Mom)
+        {
+            if (Mom != null)
+                AddBacteria(god.CreateBacteria(Mom));
         }
         private void NewFood(Bacteria F = null)
         {
@@ -98,21 +101,25 @@ namespace Life
         }
         private void EatFood(Bacteria Bac)
         {
-            Bac.heal += Convert.ToInt32(Bac.Target.heal / 4);
-            bacterias.Remove(Bac.Target);
-            Field.CanvasMap.Children.Remove(Bac.Target.Texture);
-            Bac.Target = null;
-            if (Bac.heal > Bac.maxHeal)
+            if (Bac.Target.isAlive)
             {
-                Bac.heal = Bac.maxHeal;
-                Bac.heal = Convert.ToInt32(Bac.heal / 2);
-                NewBacteria(Bac);
+                Bac.Eat();
+                bacterias.Remove(Bac.Target);
+                Field.CanvasMap.Children.Remove(Bac.Target.Texture);
+                Bac.Target.isAlive = false;
+                Bac.Target = null;
+                if (Bac.heal > Bac.maxHeal)
+                {
+                    Bac.heal = Convert.ToInt32(Bac.maxHeal / 2);
+                    NewBacteria(Bac);
+                }
             }
         }
         private Food DieBacteria(Bacteria Bac)
         {
             bacterias.Remove(Bac);
             Field.CanvasMap.Children.Remove(Bac.Texture);
+            Bac.isAlive = false;
             return god.BacteriaDie(Bac);
         }
     }

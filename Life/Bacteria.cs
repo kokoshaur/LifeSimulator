@@ -20,6 +20,7 @@ namespace Life
         public int age = 0;
         public int heal;
         public int maxHeal = 2000;
+        public bool isAlive = true;
 
         protected int typeOfFood;
         protected int maxAge = 10000;
@@ -58,7 +59,7 @@ namespace Life
             double bufTarget;
             for (int i = 0; i < bacterias.Count; i++)
             {
-                if (bacterias[i].type == typeOfFood)
+                if ((bacterias[i].type == typeOfFood) && bacterias[i].isAlive)
                 {
                     bufTarget = Math.Pow(bacterias[i].x - x, 2) + Math.Pow(bacterias[i].y - y, 2);
                     if ((bufTarget < bestTarget) && (bufTarget < vision*vision))
@@ -73,55 +74,54 @@ namespace Life
         {
             if( age > 50)
             {
-                if (Target == null)
+                if ((Target == null) || (!Target.isAlive))
                 {
                     if (rand.NextDouble() < directionChangeRate)
                     {
-                        tx = rand.Next(0, Game.fieldWidth) - x;
-                        ty = rand.Next(0, Game.fieldHeight) - y;
+                        tx = rand.Next(0, Game.fieldWidth - Game.FoodSize) - x;
+                        ty = rand.Next(0, Game.fieldHeight- Game.FoodSize) - y;
                         targetAngle = Math.Atan2(-tx, -ty);
                     }
                 }
                 else
                 {
-                    tx = Target.x - x;
-                    ty = Target.y - y;
+                    tx = Target.x - x - (Game.BacterialWidth / 2) + (Game.FoodSize / 2);
+                    ty = Target.y - y - (Game.BacterialHeigth / 2) + (Game.FoodSize / 2);
                     targetAngle = Math.Atan2(-tx, -ty);
                 }
                     x += sx;
                     y += sy;
                     sx *= Game.slip;
                     sy *= Game.slip;
-                    if (x < 0)
-                        sx += speed;
-                    if (x > Game.fieldWidth)
-                        sx -= speed;
-                    if (y < 0)
-                        sy += speed;
-                    if (y > Game.fieldHeight)
-                        sy -= speed;
+                if (x < 0)
+                    sx += speed * 2;
+                if (x > (Game.fieldWidth - Game.BacterialWidth))
+                    sx -= speed * 2;
+                if (y < 0)
+                    sy += speed * 2;
+                if (y > (Game.fieldHeight - Game.BacterialHeigth))
+                    sy -= speed * 2;
 
-                    if (targetAngle < 0)
-                        targetAngle += Math.PI * 2;
+                if (targetAngle < 0)
+                    targetAngle += Math.PI * 2;
 
-                    if ((Math.Abs(angle - targetAngle) < rotationSpeed) || (Math.Abs(angle - targetAngle) > Math.PI * 2 - rotationSpeed))
-                        angle = targetAngle;
-                    else if (((angle < targetAngle) && (angle + Math.PI > targetAngle)) || ((angle > targetAngle) && (angle - Math.PI > targetAngle)))
-                        angle += rotationSpeed;
-                    else
-                        angle -= rotationSpeed;
+                if ((Math.Abs(angle - targetAngle) < rotationSpeed) || (Math.Abs(angle - targetAngle) > Math.PI * 2 - rotationSpeed))
+                    angle = targetAngle;
+                else if (((angle < targetAngle) && (angle + Math.PI > targetAngle)) || ((angle > targetAngle) && (angle - Math.PI > targetAngle)))
+                    angle += rotationSpeed;
+                else
+                    angle -= rotationSpeed;
 
-                    if (angle < 0)
-                        angle += Math.PI * 2;
-                    else if (angle > Math.PI * 2)
-                        angle -= Math.PI * 2;
+                if (angle < 0)
+                    angle += Math.PI * 2;
+                else if (angle > Math.PI * 2)
+                    angle -= Math.PI * 2;
 
-                    if ((tx * tx + ty * ty) > 1)
-                    {
-                        sx -= Math.Sin(angle) * speed;
-                        sy -= Math.Cos(angle) * speed;
-                    }
-                
+                if ((tx * tx + ty * ty) > 1)
+                {
+                    sx -= Math.Sin(angle) * speed;
+                    sy -= Math.Cos(angle) * speed;
+                }
             }
             
         }
@@ -132,6 +132,15 @@ namespace Life
             else
                 rotate = new RotateTransform((rotateAngle - angle) * 180 / Math.PI, Texture.Width / 2, Texture.Height / 2);
             Texture.RenderTransform = rotate;
+        }
+        public void Eat()
+        {
+            if (Target.type == Game.IsPeac)
+                Game.Controler.nowPeacCounter--;
+            else if (Target.type == Game.IsFood)
+                Game.Controler.nowFoodCounter--;
+            heal += Convert.ToInt32(Target.heal / 4);
+            Target.isAlive = false;
         }
         public void Mutation()
         {
@@ -178,6 +187,11 @@ namespace Life
         }
         public Food Die()
         {
+            isAlive = false;
+            if (type == Game.IsEvil)
+                Game.Controler.nowEvilCounter--;
+            else
+                Game.Controler.nowPeacCounter--;
             Food F = new Food(x,y);
             return F;
         }

@@ -5,11 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Life"
         mc:Ignorable="d"
-        Title="Симмулятор эволюции" Height="450" Width="800">
-    <Canvas x:Name="CanvasMap" x:FieldModifier="public">
-        <Label x:Name="Label" Content="0" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="707" Canvas.Top="361"/>
-        <Button x:Name="StatrLife" Content="Начать" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="StatrLife_Click" Canvas.Left="707" Canvas.Top="322"/>
-        <Button x:Name="Continue" Content="Продолжить" Canvas.Left="707" Canvas.Top="297" Width="75" IsEnabled="False" Click="Continue_Click"/>
-        <Button x:Name="Pause" Content="Пауза" Canvas.Left="707" Canvas.Top="272" Width="75" Click="Pause_Click" IsEnabled="False"/>
-    </Canvas>
+        Title="Симмулятор эволюции"  WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="200"/>
+        </Grid.ColumnDefinitions>
+        <Canvas x:Name="CanvasMap" x:FieldModifier="public" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Azure"></Canvas>
+        <Line x:Name="VerticalWall" Stroke="Black" X2="3" X1="3" StrokeThickness="1" Margin="0" Width="6" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <Line x:Name="HorizontlWall" Stroke="Black" StrokeThickness="1" Margin="0" Width="6" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <Button x:Name="StartLife" Content="Начать" Click="StartLife_Click" Grid.Column="1" Margin="15,15,0,0" Height="30" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Button x:Name="Continue" Content="Продолжить" Grid.Column="1" IsEnabled="False" Click="Continue_Click"  Margin="15,105,0,0" Width="100" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Button x:Name="Pause" Content="Пауза" Grid.Column="1" IsEnabled="False" Click="Pause_Click"  Width="100" Height="30" Margin="15,60,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label x:Name="PeacCount"  Content="{Binding frame}" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="16"/>
+        <Line x:Name="FoodGraph" Grid.Column="1" Stroke="Green" StrokeThickness="10" Margin="10,0,0,40" HorizontalAlignment="Left" VerticalAlignment="Bottom" X1="5" X2="5" Y2="{Binding nowFoodCounterForGraph}" ToolTip="{Binding nowFoodCounter}"/>
+        <Line x:Name="PeacGraph" Grid.Column="1" Stroke="Blue" StrokeThickness="10" Margin="30,0,0,40" HorizontalAlignment="Left" VerticalAlignment="Bottom" X1="5" X2="5" Y2="{Binding nowPeacCounterForGraph}" ToolTip="{Binding nowPeacCounter}"/>
+        <Line x:Name="EvilGraph" Grid.Column="1" Stroke="Red" StrokeThickness="10" Margin="50,0,0,40" HorizontalAlignment="Left" VerticalAlignment="Bottom" X1="5" X2="5" Y2="{Binding nowEvilCounterForGraph}" ToolTip="{Binding nowEvilCounter}"/>
+    </Grid>
 </Window>

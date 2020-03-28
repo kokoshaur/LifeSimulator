@@ -15,6 +15,7 @@ namespace Life.Item
             type = Game.IsFood;
             typeOfFood = -1;
             heal = 2000;
+            Game.Controler.nowFoodCounter++;
         }
         public override Bacteria Reproduction()
         {

@@ -7,47 +7,32 @@ namespace Life
     {
         Random rnd = new Random();
 
-        int randomize = 0;
-        public Bacteria Start(int x, int y)
+        public Bacteria Start()
         {
-            Game.nowPeacCounter++;
-            Game.allTimePeacCounter++;
-            return new PeacBacteria(x, y);
+            return new PeacBacteria(Game.fieldHeight / 2, Game.fieldWidth / 2);
         }
         public Bacteria CreateBacteria(Bacteria Mom)
         {
             if (Mom.type == Game.IsEvil)
             {
-                Game.nowEvilCounter++;
-                Game.allTimeEvilCounter++;
                 return Mom.Reproduction();
             }
-            else if (rnd.Next(0, Game.changeOfBeginEvil + randomize) > Game.changeOfBeginEvil)
+            else if (rnd.Next(0, 1000) < Game.changeOfBeginEvil)
             {
-                randomize = 0;
-                Game.nowEvilCounter++;
-                Game.allTimeEvilCounter++;
                 PeacBacteria Bac = (PeacBacteria)Mom.Reproduction();
                 return Bac.BeginToEvil();
             }
             else
             {
-                Game.allTimePeacCounter++;
-                Game.nowPeacCounter++;
-                randomize++;
                 return Mom.Reproduction();
             }
         }
         public Food CreateFood()
         {
-            return new Food(rnd.Next(1, Game.fieldWidth), rnd.Next(1, Game.fieldHeight));
+            return new Food(rnd.Next(Game.BacterialWidth / 2, Game.fieldWidth - Game.BacterialWidth), rnd.Next(Game.BacterialWidth / 2, Game.fieldHeight - Game.BacterialWidth));
         }
         public Food BacteriaDie(Bacteria Bac)
         {
-            if (Bac.type == Game.IsEvil)
-                Game.nowEvilCounter--;
-            else
-                Game.nowPeacCounter--;
             return Bac.Die();
         }
     }
