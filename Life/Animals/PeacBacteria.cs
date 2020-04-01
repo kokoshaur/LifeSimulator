@@ -16,8 +16,6 @@ namespace Life.Animals
             type = Game.IsPeac;
             typeOfFood = Game.IsFood;
             transform = Texture.RenderTransform as RotateTransform;
-            Game.Controler.nowPeacCounter++;
-            Game.Controler.allTimePeacCounter++;
         }
         public override Bacteria Reproduction()
         {
@@ -28,7 +26,6 @@ namespace Life.Animals
         }
         public EvilBacteria BeginToEvil()
         {
-            Game.Controler.nowPeacCounter--;
             EvilBacteria Bac = new EvilBacteria(x, y);
             CopySpecifications(this, Bac, "pack://application:,,,/Resources/EvilBacterium.png");
             Bac.Mutation();

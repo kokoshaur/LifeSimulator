@@ -63,6 +63,16 @@ namespace Life {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Cogwheel {
+            get {
+                object obj = ResourceManager.GetObject("Cogwheel", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap EvilBacterium {
             get {
                 object obj = ResourceManager.GetObject("EvilBacterium", resourceCulture);
@@ -86,6 +96,16 @@ namespace Life {
         internal static System.Drawing.Bitmap PeacBacterium {
             get {
                 object obj = ResourceManager.GetObject("PeacBacterium", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap StatisticEmblem {
+            get {
+                object obj = ResourceManager.GetObject("StatisticEmblem", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

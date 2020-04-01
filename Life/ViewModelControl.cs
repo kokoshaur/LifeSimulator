@@ -75,6 +75,16 @@ namespace Life
         }
         public static readonly DependencyProperty nowEvilCounterForGraphProperty =
             DependencyProperty.Register("nowEvilCounterForGraph", typeof(int), typeof(ViewModelControl), new PropertyMetadata(null));
+        public int speed
+        {
+            get { if ((int)GetValue(speedProperty) != 0)
+                    return (100 / (int)GetValue(speedProperty));
+                else return 25;
+            }
+            set {SetValue(speedProperty, value); }
+        }
+        public static readonly DependencyProperty speedProperty =
+            DependencyProperty.Register("speed", typeof(int), typeof(ViewModelControl), new PropertyMetadata(null));
         public ViewModelControl()
         {
 

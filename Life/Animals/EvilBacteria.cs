@@ -16,8 +16,6 @@ namespace Life.Animals
             type = Game.IsEvil;
             typeOfFood = Game.IsPeac;
             transform = Texture.RenderTransform as RotateTransform;
-            Game.Controler.nowEvilCounter++;
-            Game.Controler.allTimeEvilCounter++;
         }
         public override Bacteria Reproduction()
         {

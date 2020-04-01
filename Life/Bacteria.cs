@@ -85,8 +85,8 @@ namespace Life
                 }
                 else
                 {
-                    tx = Target.x - x - (Game.BacterialWidth / 2) + (Game.FoodSize / 2);
-                    ty = Target.y - y - (Game.BacterialHeigth / 2) + (Game.FoodSize / 2);
+                    tx = Target.x - x - (Game.BacterialWidth / 2) + (Target.Texture.Width / 2);
+                    ty = Target.y - y - (Game.BacterialHeigth / 2) + (Target.Texture.Width / 2);
                     targetAngle = Math.Atan2(-tx, -ty);
                 }
                     x += sx;
@@ -135,10 +135,6 @@ namespace Life
         }
         public void Eat()
         {
-            if (Target.type == Game.IsPeac)
-                Game.Controler.nowPeacCounter--;
-            else if (Target.type == Game.IsFood)
-                Game.Controler.nowFoodCounter--;
             heal += Convert.ToInt32(Target.heal / 4);
             Target.isAlive = false;
         }
@@ -188,10 +184,6 @@ namespace Life
         public Food Die()
         {
             isAlive = false;
-            if (type == Game.IsEvil)
-                Game.Controler.nowEvilCounter--;
-            else
-                Game.Controler.nowPeacCounter--;
             Food F = new Food(x,y);
             return F;
         }

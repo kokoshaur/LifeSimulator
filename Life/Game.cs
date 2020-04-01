@@ -13,7 +13,7 @@ namespace Life
         public static int fieldHeight = 800; //высота экрана
         public static int foodSpawnRate = 30; //период спавна еды (чем больше, тем реже)
         public static double slip = 0.8;    //вязкость среды(чем больше, тем сильнее заносит бактерий)
-        public const int changeOfBeginEvil = 10;
+        public const int changeOfBeginEvil = 1000;
         public const int BacterialWidth = 20;  //Ширина бактерии
         public const int BacterialHeigth = 27; //Высота бактерии
         public const int FoodSize = 10;
@@ -22,17 +22,18 @@ namespace Life
         public const int IsEvil = 2;
 
 
-
-        public static ViewModelControl Controler { get; set; } = new ViewModelControl();
+        public ViewModelControl Controler { get; set; }
 
         MainWindow Field;
 
-        God god = new God();
+        God god;
 
         public static List<Bacteria> bacterias = new List<Bacteria>();
         public Game(MainWindow F)
         {
             Field = F;
+            Controler = new ViewModelControl();
+            god = new God(Controler);
         }
 
         public void Start()
@@ -62,13 +63,17 @@ namespace Life
                 {
                     bacterias[i].NextMove(bacterias);
                     if (bacterias[i].Target != null)
-                        if (((Math.Abs(bacterias[i].x - (FoodSize / 2) - bacterias[i].Target.x + (BacterialWidth / 2)) < 4) && (Math.Abs(bacterias[i].y - (FoodSize / 2) - bacterias[i].Target.y + BacterialHeigth / 2)) < 4) && (bacterias[i].age > 50))
+                        if (IsSuffice(i) && (bacterias[i].age > 50))
                             EatFood(bacterias[i]);
                     if (i < bacterias.Count)
                         if ((bacterias[i].heal < 1) && (bacterias[i].type != IsFood))
                             NewFood(DieBacteria(bacterias[i]));
                 }
             }
+        }
+        private bool IsSuffice(int i)
+        {
+            return ((Math.Abs((bacterias[i].x + BacterialWidth/2) - (bacterias[i].Target.x + bacterias[i].Target.Texture.Width / 2)) < bacterias[i].Target.Texture.Width / 2) && (Math.Abs((bacterias[i].y + BacterialHeigth / 2) - (bacterias[i].Target.y + bacterias[i].Target.Texture.Height / 2))) < bacterias[i].Target.Texture.Height / 2);
         }
         private void RefreshMap()
         {
@@ -103,6 +108,7 @@ namespace Life
         {
             if (Bac.Target.isAlive)
             {
+                god.RefreshCount(Bac);
                 Bac.Eat();
                 bacterias.Remove(Bac.Target);
                 Field.CanvasMap.Children.Remove(Bac.Target.Texture);

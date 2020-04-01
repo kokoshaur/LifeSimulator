@@ -9,37 +9,46 @@ namespace Life
     {
         
         static int frameSkip = 1;    //Пропуск фреймов (при больших значениях повышается производительность)
-        static int lifeSpeed = 25;  //Период обновления кадров (чем меньше, тем плавнее картинка)
 
         Game game;
 
         System.Windows.Threading.DispatcherTimer timer = new System.Windows.Threading.DispatcherTimer();
         public MainWindow()
         {
+            game = new Game(this);
             InitializeComponent();
             Refresh_Game();
-            InitControl();
-            DataContext = Game.Controler;
+            DataContext = game.Controler;
+        }
+        private void Refresh_Timer(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            timer.Interval = new TimeSpan(0, 0, 0, 0, game.Controler.speed);
         }
         private void InitControl()
         {
-            //Game.Controler.frame++;
+            game.Controler.speed = 4;
         }
         private void Refresh_Game()
         {
             game = new Game(this);
+            InitControl();
+
             Height = MinHeight = Game.fieldHeight + 6 + 33;
             Width = MinWidth = Game.fieldWidth + 200 + 6 + 33;
 
             CanvasMap.Height = Game.fieldHeight;
             CanvasMap.Width = Game.fieldWidth;
 
+            VerticalWall.X1 = VerticalWall.X2 = Game.fieldWidth;
             VerticalWall.Y2 = Game.fieldHeight;
+            HorizontlWall.Y1 = HorizontlWall.Y2 = Game.fieldHeight;
+            HorizontlWall.X2 = Game.fieldWidth;
 
-            HorizontlWall.X2 = HorizontlWall.X1 = Game.fieldHeight + 1;
+            scroll.Visibility = Visibility.Hidden;
+            OutPute.MaxWidth = Game.fieldWidth;
 
             timer.Tick += new EventHandler(TimerTick);
-            timer.Interval = new TimeSpan(0, 0, 0, 0, lifeSpeed);
+            timer.Interval = new TimeSpan(0, 0, 0, 0, game.Controler.speed);
         }
         private void StartLife_Click(object sender, RoutedEventArgs e)
         {
@@ -62,6 +71,26 @@ namespace Life
             timer.Start();
             Pause.IsEnabled = true;
             Continue.IsEnabled = false;
+        }
+        private void OpenSettings_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void OpenStatistic_Click(object sender, RoutedEventArgs e)
+        {
+            scroll.Visibility = Visibility.Visible;
+            if (Height < Game.fieldHeight + 200)
+                Height = Game.fieldHeight + 200;
+            Binding binding = new Binding();
+            binding.Mode = BindingMode.OneWay;
+            binding.Source = game.Controler.frame;
+            A.SetBinding(TextBlock.TextProperty, binding);
+            //A.Inlines.Add("{Binding frame}");
+            Binding b = BindingOperations.GetBinding(PeacCount, Label.ContentProperty);
+            PeacCount.SetBinding(ContentProperty, b);
+            A.SetBinding(TextBlock.TextProperty, b);
+
+
         }
     }
 }
