@@ -1,41 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using Life.Item;
+using Life.Animals;
+using Life.Transmission;
 
 namespace Life
 {
     class Game
     {
-        public static int fieldWidth = 800;  //ширина экрана
-        public static int fieldHeight = 800; //высота экрана
-        public static int foodSpawnRate = 30; //период спавна еды (чем больше, тем реже)
-        public static double slip = 0.8;    //вязкость среды(чем больше, тем сильнее заносит бактерий)
-        public const int changeOfBeginEvil = 1000;
-        public const int BacterialWidth = 20;  //Ширина бактерии
-        public const int BacterialHeigth = 27; //Высота бактерии
-        public const int FoodSize = 10;
-        public const int IsFood = 0;
-        public const int IsPeac = 1;
-        public const int IsEvil = 2;
+        public enum bacteriaType : int
+        {
+            Food,
+            Peac,
+            Evil
+        };
 
 
         public ViewModelControl Controler { get; set; }
-
         MainWindow Field;
-
         God god;
+        public List<Bacteria> bacterias = new List<Bacteria>();
 
-        public static List<Bacteria> bacterias = new List<Bacteria>();
         public Game(MainWindow F)
         {
             Field = F;
             Controler = new ViewModelControl();
             god = new God(Controler);
         }
-
         public void Start()
         {
             AddBacteria(god.Start());
@@ -55,25 +46,25 @@ namespace Life
         }
         private void NextFrame()
         {
-            if (Controler.frame % foodSpawnRate == 0)
+            if (Controler.frame % Settings.foodSpawnRate == 0)
                 NewFood();
             for (int i = 0; i < bacterias.Count; i++)
             {
-                if (bacterias[i].type != IsFood)
+                if (bacterias[i].type != (int)bacteriaType.Food)
                 {
                     bacterias[i].NextMove(bacterias);
                     if (bacterias[i].Target != null)
                         if (IsSuffice(i) && (bacterias[i].age > 50))
                             EatFood(bacterias[i]);
                     if (i < bacterias.Count)
-                        if ((bacterias[i].heal < 1) && (bacterias[i].type != IsFood))
+                        if ((bacterias[i].heal < 1) && (bacterias[i].type != (int)bacteriaType.Food))
                             NewFood(DieBacteria(bacterias[i]));
                 }
             }
         }
         private bool IsSuffice(int i)
         {
-            return ((Math.Abs((bacterias[i].x + BacterialWidth/2) - (bacterias[i].Target.x + bacterias[i].Target.Texture.Width / 2)) < bacterias[i].Target.Texture.Width / 2) && (Math.Abs((bacterias[i].y + BacterialHeigth / 2) - (bacterias[i].Target.y + bacterias[i].Target.Texture.Height / 2))) < bacterias[i].Target.Texture.Height / 2);
+            return ((Math.Abs((bacterias[i].x + Settings.bacterialWidth /2) - (bacterias[i].Target.x + bacterias[i].Target.Texture.Width / 2)) < bacterias[i].Target.Texture.Width / 2) && (Math.Abs((bacterias[i].y + Settings.bacterialHeight / 2) - (bacterias[i].Target.y + bacterias[i].Target.Texture.Height / 2))) < bacterias[i].Target.Texture.Height / 2);
         }
         private void RefreshMap()
         {
@@ -108,7 +99,7 @@ namespace Life
         {
             if (Bac.Target.isAlive)
             {
-                god.RefreshCount(Bac);
+                god.RefreshCountAfterEat(Bac);
                 Bac.Eat();
                 bacterias.Remove(Bac.Target);
                 Field.CanvasMap.Children.Remove(Bac.Target.Texture);
@@ -123,10 +114,18 @@ namespace Life
         }
         private Food DieBacteria(Bacteria Bac)
         {
+            god.RefreshCountAfterDie(Bac);
             bacterias.Remove(Bac);
             Field.CanvasMap.Children.Remove(Bac.Texture);
             Bac.isAlive = false;
+            CheckEndGame();
             return god.BacteriaDie(Bac);
+        }
+
+        private void CheckEndGame()
+        {
+            if ((Controler.nowEvilCounter == 0) && (Controler.nowPeacCounter == 0))
+                Field.EndGame();
         }
     }
 }

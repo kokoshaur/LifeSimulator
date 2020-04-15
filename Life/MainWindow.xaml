@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Life"
         mc:Ignorable="d"
-        Title="Симмулятор эволюции"  WindowStartupLocation="CenterScreen">
+        Title="Симмулятор эволюции"  WindowStartupLocation="Manual">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -18,15 +18,29 @@
         <Canvas x:Name="CanvasMap" x:FieldModifier="public" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Azure"></Canvas>
         <Line x:Name="VerticalWall" Stroke="Black" StrokeThickness="1" Margin="0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
         <Line x:Name="HorizontlWall" Stroke="Black" StrokeThickness="1" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <Button x:Name="StartLife" Content="Начать" Click="StartLife_Click" Grid.Column="1" Margin="15,15,0,0" Height="30" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <Button x:Name="Continue" Content="Продолжить" Grid.Column="1" IsEnabled="False" Click="Continue_Click"  Margin="15,105,0,0" Width="100" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <Button x:Name="Pause" Content="Пауза" Grid.Column="1" IsEnabled="False" Click="Pause_Click"  Width="100" Height="30" Margin="15,60,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <Label x:Name="PeacCount"  Content="{Binding frame}" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="16"/>
+        <Button x:Name="StartLife" Content="Начать" Click="StartLife_Click" Grid.Column="1" Margin="15,20,0,0" Height="30" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Button x:Name="Continue" Content="Продолжить" Grid.Column="1" IsEnabled="False" Click="Continue_Click"  Margin="130,20,0,0" Width="100" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Button x:Name="Pause" Content="Пауза" Grid.Column="1" IsEnabled="False" Click="Pause_Click"  Width="100" Height="30" Margin="15,65,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Button x:Name="Restart" Content="Перезапустить" Grid.Column="1" Click="Restart_Click"  Width="100" Height="30" Margin="130,65,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Menu Grid.Column="1" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="115">
+            <MenuItem Header="Доп"  Height="20" Width="35" BorderThickness="0" HorizontalContentAlignment ="Center">
+                <MenuItem x:Name="ImportSettings" Header="Импортировать настройки" Click="ImportSettings_Click"></MenuItem>
+                <MenuItem x:Name="ExportStatistic" Header="Экспортировать статистику" Click="ExportStatistic_Click"></MenuItem>
+                <MenuItem x:Name="ResetViewSettings" Header="Сбросить настройки графики" Click="ResetViewSettings_Click"></MenuItem>
+            </MenuItem>
+            <MenuItem x:Name="SaveExit" Header="Сохранить"  Height="20" Width="80" BorderThickness="0" Click="SaveExit_Click"/>
+        </Menu>
+        <TextBlock x:Name="PeacCount"  Text="{Binding frame}" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="16" Margin="0,0,5,0"/>
         <Line x:Name="FoodGraph" Grid.Column="1" Stroke="Green" StrokeThickness="10" Margin="10,0,0,40" HorizontalAlignment="Left" VerticalAlignment="Bottom" X1="5" X2="5" Y2="{Binding nowFoodCounterForGraph}" ToolTip="{Binding nowFoodCounter}"/>
         <Line x:Name="PeacGraph" Grid.Column="1" Stroke="Blue" StrokeThickness="10" Margin="30,0,0,40" HorizontalAlignment="Left" VerticalAlignment="Bottom" X1="5" X2="5" Y2="{Binding nowPeacCounterForGraph}" ToolTip="{Binding nowPeacCounter}"/>
         <Line x:Name="EvilGraph" Grid.Column="1" Stroke="Red" StrokeThickness="10" Margin="50,0,0,40" HorizontalAlignment="Left" VerticalAlignment="Bottom" X1="5" X2="5" Y2="{Binding nowEvilCounterForGraph}" ToolTip="{Binding nowEvilCounter}"/>
-        <Slider x:Name="SpeedControl" Grid.Column="1" VerticalAlignment="Top" Margin="50,150,50,0" Padding="0" Maximum="8" SmallChange="1" Value="{Binding speed, Mode=TwoWay}" AutoToolTipPlacement="TopLeft" HorizontalContentAlignment="Stretch" ValueChanged="Refresh_Timer" Minimum="1"/>
-        <Label x:Name="LabelSpeedControl" Content="Скорость игры" Grid.Column="1" VerticalAlignment="Top" Margin="50,170,50,0" HorizontalContentAlignment="Center"/>
+        <WrapPanel Grid.Column="1" VerticalAlignment="Top" Margin="0,125,0,0" HorizontalAlignment="Center">
+            <Button x:Name="X2" Content="x2" ToolTip="Удвоить текущую скорость" Width="20" Height="20" Margin="0,0,10,0" Click="X2_Click" ></Button>
+            <Button x:Name="Xsplit2" Content="/2" ToolTip="Располовинить текущую скорость" Width="20" Height="20" Margin="10,0,0,0" Click="Xsplit2_Click"></Button>
+        </WrapPanel>
+        <Slider x:Name="SpeedControl" Grid.Column="1" VerticalAlignment="Top" Margin="50,150,50,0" Padding="0" Maximum="7" SmallChange="1" Value="{Binding gameSpeed, Mode=TwoWay}" AutoToolTipPlacement="TopLeft" HorizontalContentAlignment="Stretch" ValueChanged="Refresh_Timer" Minimum="1"/>
+        <TextBlock x:Name="LabelSpeedControl" Text="Скорость игры" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="50,170,50,0" />
+        <CheckBox x:Name="IsStatisticMod" Content="Режим сбора статистики" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="50,190,50,0" />
         <Button x:Name="OpenSettings" Content="" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="40" Height="40" BorderThickness="0" UseLayoutRounding="True" ToolTip="Настройки" Click="OpenSettings_Click" Margin="0">
             <Button.OpacityMask>
                 <ImageBrush Stretch="Uniform" ImageSource="Resources/Cogwheel.png"/>
@@ -43,13 +57,13 @@
                 <ImageBrush ImageSource="Resources/StatisticEmblem.png"/>
             </Button.Background>
         </Button>
-        <ScrollViewer Name="scroll" CanContentScroll="True" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1">
-            <WrapPanel Name="OutPute" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1">
-                <WrapPanel x:Name="Speed">
-                    <TextBlock x:Name="A" HorizontalAlignment="Left" VerticalAlignment="Top"></TextBlock>
-                    <TextBlock x:Name="B" HorizontalAlignment="Left" VerticalAlignment="Top"></TextBlock>
-                </WrapPanel>
-            </WrapPanel>
-        </ScrollViewer>
+        <WrapPanel Name="OutPute" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Grid.ColumnSpan="2">
+            <TextBlock x:Name="Peac" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" FontSize="16"></TextBlock>
+            <TextBlock x:Name="Evil" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" FontSize="16"></TextBlock>
+            <TextBlock x:Name="MaxSpeed"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" FontSize="16"></TextBlock>
+            <TextBlock x:Name="MaxRotationSpeed"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" FontSize="16"></TextBlock>
+            <TextBlock x:Name="MaxMaxHealSpeed"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" FontSize="16"></TextBlock>
+            <TextBlock x:Name="MaxMaxAgeSpeed"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" FontSize="16"></TextBlock>
+        </WrapPanel>
     </Grid>
 </Window>

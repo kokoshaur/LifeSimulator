@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using Life.Item;
 using System.Windows.Controls;
 using System.Windows.Media;
-
+using Life.Animals;
+using Life.Transmission;
 namespace Life
 {
     abstract class Bacteria
     {
         protected static Random rand = new Random();
-
         public Bacteria Target;
         public Image Texture;
         protected RotateTransform transform;
@@ -17,16 +16,17 @@ namespace Life
         public double x;
         public double y;
         public int type;
-        public int age = 0;
+        public int age;
         public int heal;
-        public int maxHeal = 2000;
         public bool isAlive = true;
 
+        public double speed { get; protected set; } = Settings.bacteriaDefaultSpeed;
+        public double rotationSpeed { get; protected set; } = Settings.bacteriaDefaultRotationSpeed;
+        public int vision { get; protected set; } = Settings.bacteriaDefaultVision;
+        public int maxHeal { get; protected set; } = Settings.bacteriaDefaultMaxHeal;
+        public int maxAge { get; protected set; } = Settings.bacteriaDefaultMaxAge;
+
         protected int typeOfFood;
-        protected int maxAge = 10000;
-        protected int vision = 100;
-        protected double speed = 0.1;
-        protected double rotationSpeed = 0.1;
         protected double angle = 0;
         protected double targetAngle = 0;
         protected double sx = 0;
@@ -43,7 +43,6 @@ namespace Life
             y = Y;
             heal = Convert.ToInt32(maxHeal/2);
         }
-
         abstract public Bacteria Reproduction();
         public void NextMove(List<Bacteria> bacterias)
         {
@@ -78,28 +77,28 @@ namespace Life
                 {
                     if (rand.NextDouble() < directionChangeRate)
                     {
-                        tx = rand.Next(0, Game.fieldWidth - Game.FoodSize) - x;
-                        ty = rand.Next(0, Game.fieldHeight- Game.FoodSize) - y;
+                        tx = rand.Next(0, Settings.fieldWidth - Settings.foodSize) - x;
+                        ty = rand.Next(0, Settings.fieldHeight - Settings.foodSize) - y;
                         targetAngle = Math.Atan2(-tx, -ty);
                     }
                 }
                 else
                 {
-                    tx = Target.x - x - (Game.BacterialWidth / 2) + (Target.Texture.Width / 2);
-                    ty = Target.y - y - (Game.BacterialHeigth / 2) + (Target.Texture.Width / 2);
+                    tx = Target.x - x - (Settings.bacterialWidth / 2) + (Target.Texture.Width / 2);
+                    ty = Target.y - y - (Settings.bacterialHeight / 2) + (Target.Texture.Width / 2);
                     targetAngle = Math.Atan2(-tx, -ty);
                 }
                     x += sx;
                     y += sy;
-                    sx *= Game.slip;
-                    sy *= Game.slip;
+                    sx *= Settings.slip;
+                    sy *= Settings.slip;
                 if (x < 0)
                     sx += speed * 2;
-                if (x > (Game.fieldWidth - Game.BacterialWidth))
+                if (x > (Settings.fieldWidth - Settings.bacterialWidth))
                     sx -= speed * 2;
                 if (y < 0)
                     sy += speed * 2;
-                if (y > (Game.fieldHeight - Game.BacterialHeigth))
+                if (y > (Settings.fieldHeight - Settings.bacterialHeight))
                     sy -= speed * 2;
 
                 if (targetAngle < 0)
@@ -135,7 +134,7 @@ namespace Life
         }
         public void Eat()
         {
-            heal += Convert.ToInt32(Target.heal / 4);
+            heal += Convert.ToInt32(Target.heal / 2);
             Target.isAlive = false;
         }
         public void Mutation()
@@ -143,43 +142,49 @@ namespace Life
             switch (rand.Next(0, 6))
             {
                 case 0:
-                    maxAge += Convert.ToInt32(maxAge / 3);
+                    speed += Settings.bacteriaDefaultSpeed / 3;
                     break;
                 case 1:
-                    maxHeal += Convert.ToInt32(maxHeal / 3);
+                    rotationSpeed += Settings.bacteriaDefaultRotationSpeed / 5;
                     break;
                 case 2:
-                    speed += speed / 3;
+                    vision += Settings.bacteriaDefaultVision / 5;
                     break;
                 case 3:
-                    rotationSpeed += rotationSpeed / 3;
+                    maxHeal += Settings.bacteriaDefaultMaxHeal / 5;
                     break;
                 case 4:
-                    vision += Convert.ToInt32(vision / 3);
+                    maxAge += Settings.bacteriaDefaultMaxAge / 7;
                     break;
                 default:
                     break;
             }
-            //switch (rand.Next(0, 6))
-            //{
-            //    case 0:
-            //        maxAge -= 1000;
-            //        break;
-            //    case 1:
-            //        maxHeal -= 500;
-            //        break;
-            //    case 2:
-            //        speed -= 2;
-            //        break;
-            //    case 3:
-            //        rotationSpeed -= 0.1f;
-            //        break;
-            //    case 4:
-            //        vision -= 10;
-            //        break;
-            //    default:
-            //        break;
-            //}
+            switch (rand.Next(0, 6))
+            {
+                case 0:
+                    if (speed - Settings.bacteriaDefaultSpeed / 3 > 0)
+                        speed -= Settings.bacteriaDefaultSpeed / 3;
+                    break;
+                case 1:
+                    if (rotationSpeed - Settings.bacteriaDefaultRotationSpeed / 5 > 0)
+                        rotationSpeed -= Settings.bacteriaDefaultRotationSpeed / 5;
+                    break;
+                case 2:
+                    if (vision - Settings.bacteriaDefaultVision / 5 > 0)
+                        vision -= Settings.bacteriaDefaultVision / 5;
+                    break;
+                case 3:
+                    if (maxHeal - Settings.bacteriaDefaultMaxHeal / 5 > 0)
+                        maxHeal -= Settings.bacteriaDefaultMaxHeal / 5;
+                    break;
+                case 4:
+                    if (maxAge - Settings.bacteriaDefaultMaxAge / 7 > 0)
+                        maxAge -= Settings.bacteriaDefaultMaxAge / 7;
+                    break;
+                default:
+                    break;
+            }
+            Texture.ToolTip = "speed = " + speed + "\n" + "rotation speed = " + rotationSpeed + "\n" + "vision = " + vision + "\n" + "max heal = " + maxHeal + "\n" + "max age = " + maxAge;
         }
         public Food Die()
         {
@@ -192,8 +197,8 @@ namespace Life
             child.Texture = new Image
             {
                 Source = (new ImageSourceConverter()).ConvertFromString(PathToTexture) as ImageSource,
-                Width = Game.BacterialWidth,
-                Height = Game.BacterialHeigth,
+                Width = Settings.bacterialWidth,
+                Height = Settings.bacterialHeight,
             };
             child.x = Mom.x;
             child.y = Mom.y;

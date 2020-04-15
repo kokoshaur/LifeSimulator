@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Life.Transmission;
 using System.Windows;
 
 namespace Life
@@ -75,16 +71,71 @@ namespace Life
         }
         public static readonly DependencyProperty nowEvilCounterForGraphProperty =
             DependencyProperty.Register("nowEvilCounterForGraph", typeof(int), typeof(ViewModelControl), new PropertyMetadata(null));
-        public int speed
+        public int gameSpeed
         {
-            get { if ((int)GetValue(speedProperty) != 0)
-                    return (100 / (int)GetValue(speedProperty));
-                else return 25;
+            get { if ((int)GetValue(gameSpeedProperty) != 0)
+                    return (100 / (int)GetValue(gameSpeedProperty));
+                return 25;
             }
-            set {SetValue(speedProperty, value); }
+            set {SetValue(gameSpeedProperty, value); }
         }
-        public static readonly DependencyProperty speedProperty =
-            DependencyProperty.Register("speed", typeof(int), typeof(ViewModelControl), new PropertyMetadata(null));
+        public static readonly DependencyProperty gameSpeedProperty =
+            DependencyProperty.Register("gameSpeed", typeof(int), typeof(ViewModelControl), new PropertyMetadata(4));
+        public double maxSpeed
+        {
+            get { return (double)GetValue(maxSpeedProperty); }
+            set
+            {
+                if (value > maxSpeed)
+                    SetValue(maxSpeedProperty, value);
+            }
+        }
+        public static readonly DependencyProperty maxSpeedProperty =
+            DependencyProperty.Register("maxSpeed", typeof(double), typeof(ViewModelControl), new PropertyMetadata(Settings.bacteriaDefaultSpeed));
+        public double maxRotationSpeed
+        {
+            get { return (double)GetValue(maxRotationSpeedProperty); }
+            set
+            {
+                if (value > maxRotationSpeed)
+                    SetValue(maxRotationSpeedProperty, value);
+            }
+        }
+        public static readonly DependencyProperty maxRotationSpeedProperty =
+            DependencyProperty.Register("maxRotationSpeed", typeof(double), typeof(ViewModelControl), new PropertyMetadata(Settings.bacteriaDefaultRotationSpeed));
+        public int maxVision
+        {
+            get { return (int)GetValue(maxVisionProperty); }
+            set
+            {
+                if (value > maxVision)
+                    SetValue(maxVisionProperty, value);
+            }
+        }
+        public static readonly DependencyProperty maxVisionProperty =
+            DependencyProperty.Register("maxVision", typeof(int), typeof(ViewModelControl), new PropertyMetadata(Settings.bacteriaDefaultVision));
+        public int maxMaxHeal
+        {
+            get { return (int)GetValue(maxMaxHealProperty); }
+            set
+            {
+                if (value > maxMaxHeal)
+                    SetValue(maxMaxHealProperty, value);
+            }
+        }
+        public static readonly DependencyProperty maxMaxHealProperty =
+            DependencyProperty.Register("maxMaxHeal", typeof(int), typeof(ViewModelControl), new PropertyMetadata(Settings.bacteriaDefaultMaxHeal));
+        public int maxMaxAge
+        {
+            get { return (int)GetValue(maxMaxAgeProperty); }
+            set
+            {
+                if (value > maxMaxAge)
+                    SetValue(maxMaxAgeProperty, value);
+            }
+        }
+        public static readonly DependencyProperty maxMaxAgeProperty =
+            DependencyProperty.Register("maxMaxAge", typeof(int), typeof(ViewModelControl), new PropertyMetadata(Settings.bacteriaDefaultMaxAge));
         public ViewModelControl()
         {
 

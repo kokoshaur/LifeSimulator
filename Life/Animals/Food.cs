@@ -1,7 +1,8 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Media;
+using Life.Transmission;
 
-namespace Life.Item
+namespace Life.Animals
 {
     class Food : Bacteria
     {
@@ -9,13 +10,13 @@ namespace Life.Item
         {
             Texture = new Image
             {
-                Source = (new ImageSourceConverter()).ConvertFromString("pack://application:,,,/Resources/Food.png") as ImageSource,
-                Width = Game.FoodSize,
-                Height = Game.FoodSize,
+                Source = (new ImageSourceConverter()).ConvertFromString(Settings.foodTexture) as ImageSource,
+                Width = Settings.foodSize,
+                Height = Settings.foodSize,
             };
-            type = Game.IsFood;
+            type = (int)Game.bacteriaType.Food;
             typeOfFood = -1;
-            heal = 2000;
+            heal = 1000;
         }
         public override Bacteria Reproduction()
         {

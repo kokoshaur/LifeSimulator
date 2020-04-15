@@ -1,5 +1,6 @@
 ﻿using System.Windows.Media;
 using System.Windows.Controls;
+using Life.Transmission;
 
 namespace Life.Animals
 {
@@ -9,18 +10,18 @@ namespace Life.Animals
         {
             Texture = new Image
             {
-                Source = (new ImageSourceConverter()).ConvertFromString("pack://application:,,,/Resources/EvilBacterium.png") as ImageSource,
-                Width = Game.BacterialWidth,
-                Height = Game.BacterialHeigth,
+                Source = (new ImageSourceConverter()).ConvertFromString(Settings.evilTexture) as ImageSource,
+                Width = Settings.bacterialWidth,
+                Height = Settings.bacterialHeight,
             };
-            type = Game.IsEvil;
-            typeOfFood = Game.IsPeac;
+            type = (int)Game.bacteriaType.Evil;
+            typeOfFood = (int)Game.bacteriaType.Peac;
             transform = Texture.RenderTransform as RotateTransform;
         }
         public override Bacteria Reproduction()
         {
             EvilBacteria Bac = new EvilBacteria(x, y);
-            CopySpecifications(this, Bac, "pack://application:,,,/Resources/EvilBacterium.png");
+            CopySpecifications(this, Bac, Settings.evilTexture);
             Bac.Mutation();
             return Bac;
         }
