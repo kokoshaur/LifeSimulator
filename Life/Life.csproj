@@ -8,12 +8,13 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>Life</RootNamespace>
     <AssemblyName>Life</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -68,9 +69,9 @@
     <Compile Include="Animals\EvilBacteria.cs" />
     <Compile Include="Animals\Food.cs" />
     <Compile Include="Animals\PeacBacteria.cs" />
-    <Compile Include="Bacteria.cs" />
-    <Compile Include="Game.cs" />
-    <Compile Include="God.cs" />
+    <Compile Include="Models\Bacteria.cs" />
+    <Compile Include="Models\Game.cs" />
+    <Compile Include="Models\God.cs" />
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
@@ -80,7 +81,9 @@
       <DependentUpon>Textures.resx</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Transmission\Language.cs" />
     <Compile Include="Transmission\Settings.cs" />
+    <Compile Include="Transmission\Statistics.cs" />
     <Compile Include="Transmission\ViewModelControl.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

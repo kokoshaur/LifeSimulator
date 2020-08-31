@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Life"
         mc:Ignorable="d"
-        Title="Симмулятор эволюции"  WindowStartupLocation="Manual">
+        WindowStartupLocation="Manual">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -23,7 +23,7 @@
         <Button x:Name="Pause" Content="Пауза" Grid.Column="1" IsEnabled="False" Click="Pause_Click"  Width="100" Height="30" Margin="15,65,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <Button x:Name="Restart" Content="Перезапустить" Grid.Column="1" Click="Restart_Click"  Width="100" Height="30" Margin="130,65,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <Menu Grid.Column="1" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="115">
-            <MenuItem Header="Доп"  Height="20" Width="35" BorderThickness="0" HorizontalContentAlignment ="Center">
+            <MenuItem x:Name="Other" Header="Доп"  Height="20" Width="35" BorderThickness="0" HorizontalContentAlignment ="Center">
                 <MenuItem x:Name="ImportSettings" Header="Импортировать настройки" Click="ImportSettings_Click"></MenuItem>
                 <MenuItem x:Name="ExportStatistic" Header="Экспортировать статистику" Click="ExportStatistic_Click"></MenuItem>
                 <MenuItem x:Name="ResetViewSettings" Header="Сбросить настройки графики" Click="ResetViewSettings_Click"></MenuItem>
@@ -41,7 +41,7 @@
         <Slider x:Name="SpeedControl" Grid.Column="1" VerticalAlignment="Top" Margin="50,150,50,0" Padding="0" Maximum="7" SmallChange="1" Value="{Binding gameSpeed, Mode=TwoWay}" AutoToolTipPlacement="TopLeft" HorizontalContentAlignment="Stretch" ValueChanged="Refresh_Timer" Minimum="1"/>
         <TextBlock x:Name="LabelSpeedControl" Text="Скорость игры" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="50,170,50,0" />
         <CheckBox x:Name="IsStatisticMod" Content="Режим сбора статистики" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="50,190,50,0" />
-        <Button x:Name="OpenSettings" Content="" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="40" Height="40" BorderThickness="0" UseLayoutRounding="True" ToolTip="Настройки" Click="OpenSettings_Click" Margin="0">
+        <Button x:Name="OpenSettings" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="40" Height="40" BorderThickness="0" UseLayoutRounding="True" ToolTip="Настройки" Click="OpenSettings_Click" Margin="0">
             <Button.OpacityMask>
                 <ImageBrush Stretch="Uniform" ImageSource="Resources/Cogwheel.png"/>
             </Button.OpacityMask>
