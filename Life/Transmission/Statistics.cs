@@ -20,7 +20,6 @@ namespace Life.Transmission
 
             return Speed;
         }
-
         public static int getMaxAge(int age)
         {
             if (age > Age)
@@ -28,7 +27,6 @@ namespace Life.Transmission
 
             return Age;
         }
-
         public static int getMaxHeal(int heal)
         {
             if (heal > Heal)
@@ -36,7 +34,6 @@ namespace Life.Transmission
 
             return Heal;
         }
-
         public static int getMaxRotation(int rotation)
         {
             if (rotation > Rotation)
